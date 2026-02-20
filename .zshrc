@@ -1,7 +1,18 @@
 # Locales
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-#
+# Node.js PATH
+export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
+# Docker Desktop completions
+fpath=(/Users/mini/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+
+# OpenClaw Completion
+source "/Users/mini/.openclaw/completions/openclaw.zsh"
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -9,7 +20,7 @@ export LANG=en_US.UTF-8
 export PATH="$HOME/bin:/usr/local/bin:$PATH:$HOME/Libary/Python/3.9/bin:$HOME/.composer/vendor/bin:/opt/homebrew/opt/openjdk/bin:$HOME/go/bin:$PATH:vendor/bin:$HOME/.local/bin"
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/mike/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -75,7 +86,7 @@ ZSH_THEME="odin"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions macos sudo)
+plugins=(git zsh-syntax-highlighting macos sudo)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -153,14 +164,14 @@ export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl@1.1/lib/
   export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@1.1/lib/pkgconfig"
 
 # bun completions
-[ -s "/Users/mike/.bun/_bun" ] && source "/Users/mike/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # pnpm
-export PNPM_HOME="/Users/mike/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
