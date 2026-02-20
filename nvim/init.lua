@@ -863,7 +863,7 @@ require('lazy').setup({
         'blade-formatter',
         'gopls',
         'golangci-lint',
-        'goimports',
+        -- 'goimports',  -- Mason fails to install this, use gopls instead
         'swiftlint',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -953,7 +953,7 @@ require('lazy').setup({
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         php = { 'php_cs_fixer', stop_after_first = true },
         blade = { 'blade-formatter' },
-        go = { 'gofmt', 'goimports' },
+        go = { 'gofmt', 'gopls' },  -- gopls handles imports too
         swift = { 'swiftformat' },
       },
       formatters = {
@@ -962,6 +962,12 @@ require('lazy').setup({
         },
         prettier = {
           require_cwd = true,
+        },
+        gopls = {
+          -- Use gopls for import organization and formatting
+          command = 'gopls',
+          args = { 'format', '-stdin' },
+          stdin = true,
         },
       },
     },
