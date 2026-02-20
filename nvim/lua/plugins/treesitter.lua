@@ -1,61 +1,27 @@
 return { -- Highlight, edit, and navigate code
   'nvim-treesitter/nvim-treesitter',
-  lazy = false,
   build = ':TSUpdate',
-  config = function()
-    local ts = require 'nvim-treesitter'
-
-    local install_languages = {
-      'bash',
-      'blade',
-      'c',
-      'diff',
-      'dockerfile',
-      'html',
-      'lua',
-      'luadoc',
-      'markdown',
-      'markdown_inline',
-      'php',
-      'query',
-      'vim',
-      'vimdoc',
-    }
-
-    local blade_parser = {
-      install_info = {
-        url = 'https://github.com/EmranMR/tree-sitter-blade',
-        files = { 'src/parser.c' },
-        branch = 'main',
+  -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+  opts = {
+    ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'php', 'dockerfile' },
+    -- Autoinstall languages that are not installed
+    auto_install = true,
+    highlight = {
+      enable = true,
+      -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+      --  If you are experiencing weird indenting issues, add the language to
+      --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+      additional_vim_regex_highlighting = { 'ruby' },
+    },
+    indent = { enable = true, disable = { 'ruby' } },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        node_incremental = 'v',
+        node_decremental = 'V',
       },
-      filetype = 'blade',
-    }
-
-    local function register_blade_parser()
-      require('nvim-treesitter.parsers').blade = blade_parser
-      vim.treesitter.language.register('blade', { 'blade' })
-    end
-
-    -- Keep custom parser registration persistent across updates.
-    vim.api.nvim_create_autocmd('User', {
-      pattern = 'TSUpdate',
-      callback = register_blade_parser,
-    })
-    register_blade_parser()
-
-    ts.setup {}
-    ts.install(install_languages)
-
-    vim.api.nvim_create_autocmd('FileType', {
-      pattern = '*',
-      callback = function(event)
-        pcall(vim.treesitter.start, event.buf)
-        if vim.bo[event.buf].filetype ~= 'ruby' then
-          vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        end
-      end,
-    })
-  end,
+    },
+  },
   -- There are additional nvim-treesitter modules that you can use to interact
   -- with nvim-treesitter. You should go explore a few and see what interests you:
   --
