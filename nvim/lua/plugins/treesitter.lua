@@ -1,7 +1,6 @@
-local treesitter = { -- Highlight, edit, and navigate code
+return { -- Highlight, edit, and navigate code
   'nvim-treesitter/nvim-treesitter',
   build = ':TSUpdate',
-  main = 'nvim-treesitter.configs', -- Sets main module to use for opts
   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
   opts = {
     ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'php', 'dockerfile' },
@@ -23,6 +22,19 @@ local treesitter = { -- Highlight, edit, and navigate code
       },
     },
   },
+  config = function(_, opts)
+    -- Register blade parser before setup
+    local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+    parser_config.blade = {
+      install_info = {
+        url = 'https://github.com/EmranMR/tree-sitter-blade',
+        files = { 'src/parser.c' },
+        branch = 'main',
+      },
+      filetype = 'blade',
+    }
+    require('nvim-treesitter.configs').setup(opts)
+  end,
   -- There are additional nvim-treesitter modules that you can use to interact
   -- with nvim-treesitter. You should go explore a few and see what interests you:
   --
@@ -30,15 +42,3 @@ local treesitter = { -- Highlight, edit, and navigate code
   --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
   --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 }
-
-local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-parser_config.blade = {
-  install_info = {
-    url = 'https://github.com/EmranMR/tree-sitter-blade',
-    files = { 'src/parser.c' },
-    branch = 'main',
-  },
-  filetype = 'blade',
-}
-
-return treesitter
