@@ -23,16 +23,21 @@ return { -- Highlight, edit, and navigate code
     },
   },
   config = function(_, opts)
-    -- Register blade parser before setup
-    local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-    parser_config.blade = {
-      install_info = {
-        url = 'https://github.com/EmranMR/tree-sitter-blade',
-        files = { 'src/parser.c' },
-        branch = 'main',
-      },
-      filetype = 'blade',
-    }
+    -- Register blade parser before setup (wrapped in pcall to avoid errors)
+    local ok, parsers = pcall(require, 'nvim-treesitter.parsers')
+    if ok and parsers.get_parser_configs then
+      local parser_config = parsers.get_parser_configs()
+      if parser_config then
+        parser_config.blade = {
+          install_info = {
+            url = 'https://github.com/EmranMR/tree-sitter-blade',
+            files = { 'src/parser.c' },
+            branch = 'main',
+          },
+          filetype = 'blade',
+        }
+      end
+    end
     require('nvim-treesitter.configs').setup(opts)
   end,
   -- There are additional nvim-treesitter modules that you can use to interact
