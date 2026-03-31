@@ -17,7 +17,7 @@ source "/Users/mini/.openclaw/completions/openclaw.zsh"
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Brew paths
-export PATH="$HOME/bin:/usr/local/bin:$PATH:$HOME/Libary/Python/3.9/bin:$HOME/.composer/vendor/bin:/opt/homebrew/opt/openjdk/bin:$HOME/go/bin:$PATH:vendor/bin:$HOME/.local/bin"
+export PATH="$HOME/bin:$HOME/dotfiles/bin:/usr/local/bin:$PATH:$HOME/Libary/Python/3.9/bin:$HOME/.composer/vendor/bin:/opt/homebrew/opt/openjdk/bin:$HOME/go/bin:$PATH:vendor/bin:$HOME/.local/bin"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -133,8 +133,8 @@ export PATH=$ANDROID_HOME/tools:$PATH
 export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  --no-use # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh" # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 
 # Automatically calling `nvm use` when there's a .nvmrc in directory
 autoload -U add-zsh-hook
@@ -189,3 +189,81 @@ set -a # automatically source all env
 source ~/dotfiles/.env || true
 set +a # disable source all
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
+# opencode
+export PATH=/Users/mike/.opencode/bin:$PATH
+export PATH="$HOME/.config/composer/vendor/bin:$PATH"
+
+# Git Worktree helpers
+# gwa: add worktree — creates a new branch and worktree in .worktrees/<branch>, then cd's into it
+gwa () {
+  if [ -z "$1" ]; then
+    echo "Usage: gwa <branch> [base]"
+    return 1
+  fi
+
+  branch=$1
+  base=${2:-$(git branch --show-current)}
+  dir=".worktrees/$branch"
+
+  mkdir -p .worktrees
+
+  echo "Creating worktree '$branch' from '$base'..."
+  git worktree add -b "$branch" "$dir" "$base" &&
+  cd "$dir"
+}
+
+# gwd: delete worktree — removes the worktree and its branch
+gwd () {
+  if [ -z "$1" ]; then
+    echo "Usage: gwd <branch>"
+    return 1
+  fi
+
+  branch=$1
+  dir=".worktrees/$branch"
+
+  echo "Removing worktree '$branch'..."
+
+  git worktree remove "$dir" &&
+  git branch -d "$branch"
+}
+
+# gwm: merge worktree — merges the branch into current branch, then removes the worktree and branch
+# Usage: gwm <branch> [--squash]
+gwm () {
+  local squash=false
+  local branch=""
+
+  for arg in "$@"; do
+    case "$arg" in
+      --squash) squash=true ;;
+      *) branch="$arg" ;;
+    esac
+  done
+
+  if [ -z "$branch" ]; then
+    echo "Usage: gwm <branch> [--squash]"
+    return 1
+  fi
+
+  local dir=".worktrees/$branch"
+  local target=$(git branch --show-current)
+
+  if $squash; then
+    echo "Squash-merging '$branch' into '$target'..."
+    git merge --squash "$branch" || return 1
+    git commit || return 1
+  else
+    echo "Merging '$branch' into '$target'..."
+    git merge --no-ff "$branch" || return 1
+  fi
+
+  echo "Removing worktree..."
+  git worktree remove "$dir"
+
+  echo "Deleting branch..."
+  git branch -d "$branch"
+
+  echo "✅ Merged and cleaned up '$branch'"
+}

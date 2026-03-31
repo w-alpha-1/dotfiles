@@ -90,6 +90,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
+-- Disabled: may be causing speed issues
 vim.g.have_nerd_font = false
 
 -- [[ Setting options ]]
@@ -511,7 +512,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    branch = 'master',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -560,7 +561,7 @@ require('lazy').setup({
         defaults = {
           file_ignore_patterns = {
             'node_modules',
-            '.git',
+            '%.git/',
             'vendor',
           },
         },
@@ -587,7 +588,83 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>sg', function()
+        builtin.live_grep {
+          additional_args = {
+            '--hidden',
+            '--no-ignore',
+            -- general
+            '--glob',
+            '!.git/',
+            '--glob',
+            '!.DS_Store',
+            '--glob',
+            '!*.pem',
+            '--glob',
+            '!*-debug.log*',
+            '--glob',
+            '!*.lock',
+            '--glob',
+            '!package-lock.json',
+            -- js/node
+            '--glob',
+            '!node_modules/',
+            '--glob',
+            '!.pnp.*',
+            '--glob',
+            '!.yarn/',
+            '--glob',
+            '!coverage/',
+            '--glob',
+            '!.vercel/',
+            '--glob',
+            '!*.tsbuildinfo',
+            '--glob',
+            '!next-env.d.ts',
+            -- next.js
+            '--glob',
+            '!.next/',
+            '--glob',
+            '!out/',
+            -- vite
+            '--glob',
+            '!.vite/',
+            -- build output
+            '--glob',
+            '!build/',
+            '--glob',
+            '!dist/',
+            -- laravel
+            '--glob',
+            '!vendor/',
+            '--glob',
+            '!storage/framework/',
+            '--glob',
+            '!storage/logs/',
+            '--glob',
+            '!bootstrap/cache/',
+            '--glob',
+            '!.phpunit.cache/',
+            '--glob',
+            '!public/build/',
+            '--glob',
+            '!public/hot',
+            '--glob',
+            '!public/storage',
+            -- ios
+            '--glob',
+            '!Pods/',
+            '--glob',
+            '!DerivedData/',
+            '--glob',
+            '!.build/',
+            '--glob',
+            '!*.xcodeproj/xcuserdata/',
+            '--glob',
+            '!*.xcworkspace/xcuserdata/',
+          },
+        }
+      end, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>sq', builtin.quickfix, { desc = '[S]earch [Q]uickfix' })
@@ -636,7 +713,6 @@ require('lazy').setup({
   {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
   },
   { 'Bilal2453/luvit-meta', lazy = true },
   {
@@ -812,6 +888,19 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
+
+        intelephense = {
+          init_options = {
+            licenceKey = os.getenv 'INTELEPHENSE_LICENSE',
+          },
+          settings = {
+            intelephense = {
+              telemetry = {
+                enabled = false,
+              },
+            },
+          },
+        },
 
         lua_ls = {
           -- cmd = {...},
