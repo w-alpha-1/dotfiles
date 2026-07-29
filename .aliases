@@ -86,4 +86,4 @@ alias pg_start="launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.p
 alias pg_stop="launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
 
 #iCloud
-alias icloud="cd '/Users/mike/Library/Mobile Documents/com~apple~CloudDocs/iCloud (Mike)'"
+alias icloud='cd "$HOME/Library/Mobile Documents/com~apple~CloudDocs/iCloud (Mike)"'
