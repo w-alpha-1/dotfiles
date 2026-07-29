@@ -10,7 +10,7 @@ alias ls="eza --icons=always"
 # System
 alias edithost='subl /etc/hosts'
 alias editbash="sudo subl ~/.bash_profile"
-alias launchvpn="sudo openvpn --config /Users/Mike-Personal/Desktop/my_expressvpn_usa_-_los_angeles_-_1_udp.ovpn"
+alias launchvpn='sudo openvpn --config "$HOME/Desktop/my_expressvpn_usa_-_los_angeles_-_1_udp.ovpn"'
 alias aliasreload=". ~/.zshrc && echo 'ZSH config reloaded from ~/.zshrc'"
 
 #Homestead
