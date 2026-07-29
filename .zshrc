@@ -6,7 +6,7 @@ export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
 # Docker Desktop completions
-fpath=(/Users/mini/.docker/completions $fpath)
+fpath=($HOME/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 
