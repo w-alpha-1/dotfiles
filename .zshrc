@@ -188,7 +188,7 @@ set +a # disable source all
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
 # opencode
-export PATH=/Users/mike/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 # Git Worktree helpers
